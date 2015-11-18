@@ -2,6 +2,7 @@ MooMask = new Class({
     Implements: Options,
 
     options: {
+        'numeric': false,
         'uppercase': false,
         'mask': ''
     },
@@ -26,20 +27,27 @@ MooMask = new Class({
                 }
             }.bind(this),
             'keydown': function(ev){
-                var v = this.element.get('value');
-                if (!this.isValid(ev.key, v.length)) {
-                    if (!this.isNeutral(ev)){
-                        var m = this.options.mask.substr(this.element.get('value').length, 1);
-                        if (!['A', '0'].contains(m)){
-                            if (this.element.get('value').length < this.options.mask.length) {
-                                if (this.isValid(ev.key, this.element.get('value').length + 1)){
-                                    var ch = (this.options.mask.substr(this.element.get('value').length, 1));
-                                    this.element.set('value', this.element.get('value') + ch + ev.key)
+                if (this.options.numeric){
+                    if (!ev.key.match(/[0-9]+/)){
+                        ev.stop();
+                    }
+                }
+                if (this.options.mask){
+                    var v = this.element.get('value');
+                    if (!this.isValid(ev.key, v.length)) {
+                        if (!this.isNeutral(ev)) {
+                            var m = this.options.mask.substr(this.element.get('value').length, 1);
+                            if (!['A', '0'].contains(m)) {
+                                if (this.element.get('value').length < this.options.mask.length) {
+                                    if (this.isValid(ev.key, this.element.get('value').length + 1)) {
+                                        var ch = (this.options.mask.substr(this.element.get('value').length, 1));
+                                        this.element.set('value', this.element.get('value') + ch + ev.key)
+                                    }
                                 }
                             }
-                        }
 
-                        ev.preventDefault();
+                            ev.preventDefault();
+                        }
                     }
                 }
             }.bind(this),
