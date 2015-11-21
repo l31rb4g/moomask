@@ -28,7 +28,8 @@ MooMask = new Class({
             }.bind(this),
             'keydown': function(ev){
                 if (this.options.numeric){
-                    if (!ev.key.match(/[0-9]+/)){
+                    if (!ev.key.match(/[0-9]+/) && !this.isNeutral(ev)){
+                        ev.target.set('value', ev.target.get('value').replace(/[^0-9]+/, ''));
                         ev.stop();
                     }
                 }
@@ -67,7 +68,7 @@ MooMask = new Class({
 
     isNeutral: function(ev){
         if (!ev.control && !ev.shift) {
-            if (!['delete', 'backspace', 'esc'].contains(ev.key)) {
+            if (!['delete', 'backspace', 'esc', 'left', 'right', 'home', 'end'].contains(ev.key)) {
                 return false;
             }
         }
