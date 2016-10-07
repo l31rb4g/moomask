@@ -28,9 +28,11 @@ MooMask = new Class({
             }.bind(this),
             'keydown': function(ev){
                 if (this.options.numeric){
-                    if (!ev.key.match(/[0-9]+/) && !this.isNeutral(ev)){
-                        ev.target.set('value', ev.target.get('value').replace(/[^0-9]+/, ''));
-                        ev.stop();
+                    if (typeOf(ev.key) == 'string') {
+                        if (!ev.key.match(/[0-9]+/) && !this.isNeutral(ev)) {
+                            ev.target.set('value', ev.target.get('value').replace(/[^0-9]+/, ''));
+                            ev.stop();
+                        }
                     }
                 }
                 if (this.options.mask){
@@ -68,7 +70,7 @@ MooMask = new Class({
 
     isNeutral: function(ev){
         if (!ev.control && !ev.shift) {
-            if (!['delete', 'backspace', 'esc', 'left', 'right', 'home', 'end'].contains(ev.key)) {
+            if (!['delete', 'backspace', 'esc', 'left', 'right', 'home', 'end', 'tab'].contains(ev.key)) {
                 return false;
             }
         }
@@ -85,9 +87,9 @@ MooMask = new Class({
     isValid: function(char, pos){
         var m = this.options.mask.substr(pos, 1);
         if (m == 'A') {
-            return char.match(/[a-zA-Z]/);
+            return String(char).match(/[a-zA-Z]/);
         } else if (m == '0') {
-            return char.match(/[0-9]/);
+            return String(char).match(/[0-9]/);
         }
         return false;
     }
